@@ -4,216 +4,295 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>세종학당 한국어 2 종합문제 연습</title>
+  <!-- Google Fonts: Pretendard alternative & Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Chart.js CDN for interactive doughnut chart -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- FontAwesome for clean icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
     :root {
       --primary: #4F46E5;
       --primary-hover: #4338CA;
+      --primary-light: #EEF2FF;
+      --primary-soft: rgba(79, 70, 229, 0.08);
       --bg: #F8FAFC;
-      --card-bg: #FFFFFF;
-      --text: #1E293B;
-      --text-muted: #64748B;
-      --border: #E2E8F0;
-      --correct: #10B981;
+      --surface: #FFFFFF;
+      --text-main: #0F172A;
+      --text-sub: #475569;
+      --text-muted: #94A3B8;
+      --border-subtle: #E2E8F0;
+      --correct: #059669;
       --correct-bg: #ECFDF5;
-      --wrong: #EF4444;
-      --wrong-bg: #FEF2F2;
+      --correct-border: #A7F3D0;
+      --wrong: #E11D48;
+      --wrong-bg: #FFF1F2;
+      --wrong-border: #FECDD3;
+      --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 14px -2px rgb(0 0 0 / 0.08);
+      --shadow-lg: 0 12px 28px -4px rgb(0 0 0 / 0.1);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif;
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
     body {
       background-color: var(--bg);
-      color: var(--text);
+      color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 16px;
+      padding: 16px 12px 36px;
     }
 
     .container {
       width: 100%;
-      max-width: 600px;
+      max-width: 620px;
       margin: 0 auto;
     }
 
-    .header-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    /* Top Navigation Header */
+    .app-header {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
       margin-bottom: 16px;
-      border: 1px solid var(--border);
-      text-align: center;
+      border: 1px solid var(--border-subtle);
       position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      margin-bottom: 6px;
+      letter-spacing: -0.2px;
     }
 
     .header-title {
       font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.3px;
     }
 
     .header-sub {
-      font-size: 0.9rem;
-      color: var(--text-muted);
+      font-size: 0.86rem;
+      color: var(--text-sub);
+      margin-top: 3px;
+      font-weight: 500;
     }
 
-    .home-btn {
+    .back-btn {
       position: absolute;
-      left: 16px;
+      left: 14px;
       top: 50%;
       transform: translateY(-50%);
       background: #F1F5F9;
-      border: none;
+      border: 1px solid var(--border-subtle);
       padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-muted);
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-sub);
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
     }
 
-    .home-btn:hover {
+    .back-btn:hover {
       background: #E2E8F0;
-      color: var(--text);
+      color: var(--text-main);
     }
 
-    /* Unit Selection Screen */
-    .unit-grid {
+    /* Unit Selection Cards */
+    .unit-list {
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
 
     .unit-card {
-      background: var(--card-bg);
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
+      background: var(--surface);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 20px 22px;
       text-align: left;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: var(--shadow-sm);
     }
 
     .unit-card:hover {
       border-color: var(--primary);
       transform: translateY(-2px);
-      box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.1);
+      box-shadow: var(--shadow-md);
     }
 
-    .unit-card-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-
-    .unit-card-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .unit-arrow {
-      font-size: 1.5rem;
+    .unit-tag {
+      font-size: 0.78rem;
+      font-weight: 800;
       color: var(--primary);
-      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 3px;
     }
 
-    /* Quiz Screen */
+    .unit-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 3px;
+    }
+
+    .unit-desc {
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      font-weight: 500;
+    }
+
+    .unit-arrow-pill {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .unit-card:hover .unit-arrow-pill {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* Quiz Stage Container */
     .quiz-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-      border: 1px solid var(--border);
-      margin-bottom: 16px;
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-subtle);
     }
 
-    .progress-bar-container {
+    .progress-track {
       width: 100%;
-      height: 8px;
+      height: 6px;
       background-color: #E2E8F0;
       border-radius: 9999px;
       overflow: hidden;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
-    .progress-bar {
+    .progress-fill {
       height: 100%;
-      background-color: var(--primary);
+      background: linear-gradient(90deg, #6366F1, #4F46E5);
+      border-radius: 9999px;
       transition: width 0.3s ease;
       width: 0%;
     }
 
-    .question-instruction {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-      line-height: 1.4;
+    .instruction-banner {
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: #334155;
       background: #F8FAFC;
-      padding: 10px 12px;
-      border-radius: 8px;
-      border-left: 3px solid var(--primary);
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      border-left: 4px solid var(--primary);
+      font-weight: 600;
     }
 
-    .question-header {
+    .quiz-info-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
-    .question-number {
-      font-size: 1.1rem;
-      font-weight: 700;
+    .q-step-badge {
+      font-size: 0.8rem;
+      font-weight: 800;
       color: var(--primary);
+      background: var(--primary-light);
+      padding: 4px 10px;
+      border-radius: 8px;
     }
 
-    .question-text {
+    .question-box {
+      background: #F8FAFC;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 20px 18px;
+      margin-bottom: 20px;
       font-size: 1.15rem;
-      line-height: 1.6;
-      font-weight: 500;
-      margin-bottom: 24px;
-      white-space: pre-line;
+      line-height: 1.75;
+      font-weight: 700;
       color: #0F172A;
+      white-space: pre-line;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
     }
 
-    .options-list {
+    /* Option Items */
+    .options-grid {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .option-btn {
       width: 100%;
       text-align: left;
-      background: #F8FAFC;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      font-size: 1.05rem;
-      color: var(--text);
+      background: var(--surface);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 1.02rem;
+      color: var(--text-main);
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.15s ease;
       display: flex;
       align-items: center;
+      justify-content: space-between;
     }
 
     .option-btn:hover:not(:disabled) {
-      background: #EEF2FF;
       border-color: var(--primary);
+      background: var(--primary-soft);
+      transform: translateY(-1px);
     }
 
     .option-btn:disabled {
@@ -221,137 +300,190 @@
     }
 
     .option-btn.selected-correct {
-      background-color: var(--correct-bg);
-      border-color: var(--correct);
-      color: #065F46;
-      font-weight: 600;
+      background-color: var(--correct-bg) !important;
+      border-color: var(--correct) !important;
+      color: #065F46 !important;
+      font-weight: 800;
     }
 
     .option-btn.selected-wrong {
-      background-color: var(--wrong-bg);
-      border-color: var(--wrong);
-      color: #991B1B;
-      font-weight: 600;
+      background-color: var(--wrong-bg) !important;
+      border-color: var(--wrong) !important;
+      color: #991B1B !important;
+      font-weight: 800;
     }
 
     .option-btn.reveal-correct {
-      border-color: var(--correct);
-      background-color: var(--correct-bg);
-      color: #065F46;
+      border-color: var(--correct) !important;
+      background-color: var(--correct-bg) !important;
+      color: #065F46 !important;
+      font-weight: 800;
     }
 
-    .feedback-box {
-      margin-top: 20px;
+    /* Feedback Banner */
+    .feedback-banner {
+      margin-top: 18px;
       padding: 16px;
-      border-radius: 12px;
+      border-radius: 14px;
       display: none;
-      animation: fadeIn 0.3s ease;
+      animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .feedback-box.correct {
+    .feedback-banner.correct {
       background-color: var(--correct-bg);
-      border: 1px solid var(--correct);
+      border: 1px solid var(--correct-border);
       color: #065F46;
     }
 
-    .feedback-box.wrong {
+    .feedback-banner.wrong {
       background-color: var(--wrong-bg);
-      border: 1px solid var(--wrong);
+      border: 1px solid var(--wrong-border);
       color: #991B1B;
     }
 
     .feedback-title {
       font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 4px;
+      font-weight: 800;
+      margin-bottom: 3px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
     .feedback-desc {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
+      font-weight: 600;
+      line-height: 1.5;
     }
 
-    .next-btn {
+    .continue-btn {
       width: 100%;
       margin-top: 16px;
-      padding: 14px;
+      padding: 15px;
       background-color: var(--primary);
       color: white;
       border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 600;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 800;
       cursor: pointer;
       display: none;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      transition: background 0.2s, transform 0.1s;
     }
 
-    .next-btn:hover {
+    .continue-btn:hover {
       background-color: var(--primary-hover);
     }
 
-    /* Result Screen */
-    .result-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 32px 24px;
-      text-align: center;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-      border: 1px solid var(--border);
+    .continue-btn:active {
+      transform: scale(0.99);
     }
 
-    .chart-container {
+    /* Result Stage */
+    .result-card {
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 32px 20px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .result-badge {
+      font-size: 0.82rem;
+      font-weight: 800;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 5px 14px;
+      border-radius: 9999px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    .result-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .chart-box {
       position: relative;
-      width: 200px;
-      height: 200px;
+      width: 190px;
+      height: 190px;
       margin: 20px auto;
     }
 
-    .score-summary {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .score-details {
-      font-size: 1rem;
-      color: var(--text-muted);
+    .stat-pills {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
       margin-bottom: 24px;
     }
 
-    .action-btn-group {
+    .stat-pill {
+      background: var(--bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 10px 16px;
+      text-align: center;
+      flex: 1;
+    }
+
+    .stat-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 2px;
+    }
+
+    .stat-num {
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+
+    .stat-num.green { color: var(--correct); }
+    .stat-num.red { color: var(--wrong); }
+
+    .result-action-group {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    .action-btn {
+    .btn-act {
       width: 100%;
-      padding: 14px;
-      border-radius: 12px;
+      padding: 15px;
+      border-radius: 14px;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 800;
       cursor: pointer;
       border: none;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
-    .btn-retry-all {
+    .btn-primary-action {
       background-color: var(--primary);
       color: white;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
     }
 
-    .btn-retry-all:hover {
+    .btn-primary-action:hover {
       background-color: var(--primary-hover);
     }
 
-    .btn-retry-wrong {
-      background-color: #F1F5F9;
-      color: var(--text);
+    .btn-secondary-action {
+      background-color: var(--bg);
+      color: var(--text-main);
+      border: 1.5px solid var(--border-subtle);
     }
 
-    .btn-retry-wrong:hover {
+    .btn-secondary-action:hover {
       background-color: #E2E8F0;
     }
 
@@ -359,200 +491,233 @@
       display: none !important;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- Header -->
-    <div class="header-card">
-      <button id="homeBtn" class="home-btn hidden" onclick="goHome()">← 단원 선택</button>
-      <div class="header-title" id="appTitle">세종학당 한국어 2 종합문제</div>
-      <div class="header-sub" id="appSubTitle">초급 2 연습 문제</div>
-    </div>
+    <!-- Top Header -->
+    <header class="app-header">
+      <button id="backBtn" class="back-btn hidden" onclick="goHome()">
+        <i class="fa-solid fa-arrow-left"></i> 단원 선택
+      </button>
+      <div class="header-badge" id="headerTag">
+        <i class="fa-solid fa-book-open"></i> 세종학당 한국어 2
+      </div>
+      <h1 class="header-title" id="appTitle">종합문제 연습</h1>
+      <p class="header-sub" id="appSubTitle">풀이할 단원을 선택해 주세요</p>
+    </header>
 
-    <!-- 1. Unit Select Screen -->
-    <div id="unitScreen" class="unit-grid">
+    <!-- Screen 1: Unit Selector -->
+    <section id="unitScreen" class="unit-list">
       <div class="unit-card" onclick="startUnit('unit1_5')">
         <div>
-          <div class="unit-card-title">Part 03 : 초급2 · 1과~5과</div>
-          <div class="unit-card-desc">총 20문제 (어휘, 문법, 종합 이해)</div>
+          <div class="unit-tag"><i class="fa-solid fa-layer-group"></i> Part 03</div>
+          <div class="unit-title">초급 2 · 1과~5과</div>
+          <div class="unit-desc">총 20문제 (어휘, 문법, 종합 이해)</div>
         </div>
-        <div class="unit-arrow">›</div>
+        <div class="unit-arrow-pill"><i class="fa-solid fa-chevron-right"></i></div>
       </div>
       <div class="unit-card" onclick="startUnit('unit6_10')">
         <div>
-          <div class="unit-card-title">Part 03 : 초급2 · 6과~10과</div>
-          <div class="unit-card-desc">총 20문제 (어휘, 문법, 종합 이해)</div>
+          <div class="unit-tag"><i class="fa-solid fa-layer-group"></i> Part 03</div>
+          <div class="unit-title">초급 2 · 6과~10과</div>
+          <div class="unit-desc">총 20문제 (어휘, 문법, 종합 이해)</div>
         </div>
-        <div class="unit-arrow">›</div>
+        <div class="unit-arrow-pill"><i class="fa-solid fa-chevron-right"></i></div>
       </div>
       <div class="unit-card" onclick="startUnit('unit11_15')">
         <div>
-          <div class="unit-card-title">Part 03 : 초급2 · 11과~15과</div>
-          <div class="unit-card-desc">총 20문제 (어휘, 문법, 종합 이해)</div>
+          <div class="unit-tag"><i class="fa-solid fa-layer-group"></i> Part 03</div>
+          <div class="unit-title">초급 2 · 11과~15과</div>
+          <div class="unit-desc">총 20문제 (어휘, 문법, 종합 이해)</div>
         </div>
-        <div class="unit-arrow">›</div>
+        <div class="unit-arrow-pill"><i class="fa-solid fa-chevron-right"></i></div>
       </div>
       <div class="unit-card" onclick="startUnit('unit16_20')">
         <div>
-          <div class="unit-card-title">Part 03 : 초급2 · 16과~20과</div>
-          <div class="unit-card-desc">총 20문제 (어휘, 문법, 종합 이해)</div>
+          <div class="unit-tag"><i class="fa-solid fa-layer-group"></i> Part 03</div>
+          <div class="unit-title">초급 2 · 16과~20과</div>
+          <div class="unit-desc">총 20문제 (어휘, 문법, 종합 이해)</div>
         </div>
-        <div class="unit-arrow">›</div>
+        <div class="unit-arrow-pill"><i class="fa-solid fa-chevron-right"></i></div>
       </div>
-    </div>
+    </section>
 
-    <!-- 2. Quiz Screen -->
-    <div id="quizScreen" class="hidden">
-      <div class="progress-bar-container">
-        <div id="progressBar" class="progress-bar"></div>
-      </div>
-
+    <!-- Screen 2: Quiz Stage -->
+    <main id="quizScreen" class="hidden">
       <div class="quiz-card">
-        <div id="instructionText" class="question-instruction"></div>
-        <div class="question-header">
-          <span id="questionNumber" class="question-number"></span>
+        <div class="progress-track">
+          <div id="progressBar" class="progress-fill"></div>
         </div>
-        <div id="questionText" class="question-text"></div>
-        <div id="optionsContainer" class="options-list"></div>
 
-        <div id="feedbackBox" class="feedback-box">
+        <div id="instructionText" class="instruction-banner"></div>
+        
+        <div class="quiz-info-row">
+          <span id="questionStepBadge" class="q-step-badge"></span>
+        </div>
+
+        <div id="questionText" class="question-box"></div>
+        <div id="optionsContainer" class="options-grid"></div>
+
+        <div id="feedbackBox" class="feedback-banner">
           <div id="feedbackTitle" class="feedback-title"></div>
           <div id="feedbackDesc" class="feedback-desc"></div>
         </div>
 
-        <button id="nextBtn" class="next-btn" onclick="nextQuestion()">다음 문제</button>
+        <button id="nextBtn" class="continue-btn" onclick="nextQuestion()">다음 문제 <i class="fa-solid fa-arrow-right"></i></button>
       </div>
-    </div>
+    </main>
 
-    <!-- 3. Result Screen -->
-    <div id="resultScreen" class="hidden">
+    <!-- Screen 3: Result Report Screen -->
+    <section id="resultScreen" class="hidden">
       <div class="result-card">
-        <div class="score-summary" id="resultSummary">학습 완료!</div>
-        <div class="chart-container">
+        <span class="result-badge"><i class="fa-solid fa-circle-check"></i> 학습 완료</span>
+        <h2 class="result-title" id="resultRateText">정답률 100%</h2>
+        
+        <div class="chart-box">
           <canvas id="resultChart"></canvas>
         </div>
-        <div class="score-details" id="resultScoreText"></div>
 
-        <div class="action-btn-group">
-          <button id="retryWrongBtn" class="action-btn btn-retry-wrong" onclick="retryWrong()">오답 다시 풀기</button>
-          <button class="action-btn btn-retry-all" onclick="retryAll()">다시 풀기</button>
-          <button class="action-btn" style="background:#E2E8F0; color:#334155; margin-top:4px;" onclick="goHome()">다른 단원 선택하기</button>
+        <div class="stat-pills">
+          <div class="stat-pill">
+            <div class="stat-label">정답</div>
+            <div class="stat-num green" id="statCorrectCount">0</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-label">오답</div>
+            <div class="stat-num red" id="statWrongCount">0</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-label">전체 문항</div>
+            <div class="stat-num" id="statTotalCount">20</div>
+          </div>
+        </div>
+
+        <div class="result-action-group">
+          <button id="retryWrongBtn" class="btn-act btn-primary-action" onclick="retryWrong()">
+            <i class="fa-solid fa-rotate-left"></i> 오답 다시 풀기
+          </button>
+          <button class="btn-act btn-secondary-action" onclick="retryAll()">
+            <i class="fa-solid fa-arrows-rotate"></i> 전체 다시 풀기
+          </button>
+          <button class="btn-act btn-secondary-action" style="background:#F1F5F9;" onclick="goHome()">
+            <i class="fa-solid fa-list"></i> 다른 단원 선택하기
+          </button>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 
   <script>
-    // Database of questions exactly as in the textbook
     const quizDatabase = {
       unit1_5: {
-        title: "Part 03 : 초급2 · 1과~5과",
+        title: "초급 2 · 1과~5과",
         questions: [
-          { id: 1, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "비가 많이 오고 바람도 부네요. _________이/가 오고 있어요.", options: ["① 안개", "② 태풍", "③ 구름", "④ 햇빛"], ans: 2 },
-          { id: 2, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "고추장을 많이 _________ 매워요.", options: ["① 넣어서", "② 할인해서", "③ 주문해서", "④ 만들어서"], ans: 1 },
-          { id: 3, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "쯔엉 씨가 못 오니까 음식 하나를 _________?", options: ["① 예약할까요", "② 쇼핑할까요", "③ 계산할까요", "④ 취소할까요"], ans: 4 },
-          { id: 4, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "낮에는 따뜻하지만 밤에는 _________ 감기 조심하세요.", options: ["① 강하니까", "② 높으니까", "③ 쌀쌀하니까", "④ 안개가 끼니까"], ans: 3 },
-          { id: 5, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "반찬을 _________에 담아서 드세요.", options: ["① 국", "② 식탁", "③ 접시", "④ 젓가락"], ans: 3 },
-          { id: 6, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "음료수 2병을 사니까 1병을 _________으로/로 주었어요.", options: ["① 양념", "② 마트", "③ 재료", "④ 공짜"], ans: 4 },
-          { id: 7, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "청소를 좀 하세요. 방이 너무 _________.", options: ["① 밝아요", "② 더러워요", "③ 깨끗해요", "④ 시끄러워요"], ans: 2 },
-          { id: 8, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "길이 너무 _________ 찾아오는 것이 힘들었어요.", options: ["① 좋아서", "② 피곤해서", "③ 가까워서", "④ 복잡해서"], ans: 4 },
-          { id: 9, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "제 친구는 예전에는 머리가 길었는데 지금은 _________.", options: ["① 커요", "② 작아요", "③ 짧아요", "④ 많아요"], ans: 3 },
-          { id: 10, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "올해 동생이 태어났는데 정말 _________.", options: ["① 잘해요", "② 쉬워요", "③ 시원해요", "④ 귀여워요"], ans: 4 },
-          { id: 11, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 어젯밤에 시끄러워서 잠을 못 잤어요.\n나: 많이 _________.", options: ["① 피곤합시다", "② 피곤할까요", "③ 피곤하겠어요", "④ 피곤하지 않아요"], ans: 3 },
-          { id: 12, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 축구를 좋아해요?\n나: 축구 _________ 안 좋아하지만 보는 것은 좋아해요.", options: ["① 하는데", "② 하려고", "③ 하는 것은", "④ 하기 전에"], ans: 3 },
-          { id: 13, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 내일은 지각하지 마세요.\n나: 알겠어요. 내일은 일찍 _________.", options: ["① 오네요", "② 올게요", "③ 오겠네요", "④ 오지 않아요"], ans: 2 },
-          { id: 14, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 집에서 학교까지 5분 걸려요.\n나: 와, 집이 아주 _________.", options: ["① 가깝네요", "② 가까워야 돼요", "③ 가깝고 싶어요", "④ 가깝지 못해요"], ans: 1 },
-          { id: 15, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 명동에 옷 가게가 많이 있어요. 가영 씨 _________ 들었어요.\n나: 그런데 명동은 너무 복잡해요.", options: ["① 에", "② 하고", "③ 에서", "④ 한테서"], ans: 4 },
-          { id: 16, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 귀걸이를 선물하려고 하는데 어디에 가는 것이 좋을까요?\n나: 강남에 한번 _________. 강남에 귀걸이 가게가 많아요.", options: ["① 가네요", "② 가는데요", "③ 가 보세요", "④ 가지 않아요"], ans: 3 },
-          { id: 17, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 프엉 씨가 누구예요?\n나: _________ 가방을 메고 있는 사람이 프엉 씨예요.", options: ["① 낮은", "② 빠른", "③ 높은", "④ 큰"], ans: 4 },
-          { id: 18, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 어머니_________ 자주 전화를 해요?\n나: 아니요, 바빠서 자주 전화를 못해요.", options: ["① 께", "② 께서", "③ 밖에", "④ 한테서"], ans: 1 },
-          { id: 19, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.", text: "삼만원 받았습니다. 영수증 드릴까요?", options: ["① 계산", "② 취소", "③ 선물", "④ 장소"], ans: 1 },
-          { id: 20, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.", text: "마트에서 소고기하고 돼지고기를 사요. 야채도 사요.", options: ["① 양념", "② 할인", "③ 식기", "④ 식재료"], ans: 4 }
+          { id: 1, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "비가 많이 오고 바람도 부네요. _________이/가 오고 있어요.", options: ["① 안개", "② 태풍", "③ 구름", "④ 햇빛"], ans: 2 },
+          { id: 2, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "고추장을 많이 _________ 매워요.", options: ["① 넣어서", "② 할인해서", "③ 주문해서", "④ 만들어서"], ans: 1 },
+          { id: 3, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "쯔엉 씨가 못 오니까 음식 하나를 _________?", options: ["① 예약할까요", "② 쇼핑할까요", "③ 계산할까요", "④ 취소할까요"], ans: 4 },
+          { id: 4, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "낮에는 따뜻하지만 밤에는 _________ 감기 조심하세요.", options: ["① 강하니까", "② 높으니까", "③ 쌀쌀하니까", "④ 안개가 끼니까"], ans: 3 },
+          { id: 5, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "반찬을 _________에 담아서 드세요.", options: ["① 국", "② 식탁", "③ 접시", "④ 젓가락"], ans: 3 },
+          { id: 6, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "음료수 2병을 사니까 1병을 _________으로/로 주었어요.", options: ["① 양념", "② 마트", "③ 재료", "④ 공짜"], ans: 4 },
+          { id: 7, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "청소를 좀 하세요. 방이 너무 _________.", options: ["① 밝아요", "② 더러워요", "③ 깨끗해요", "④ 시끄러워요"], ans: 2 },
+          { id: 8, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "길이 너무 _________ 찾아오는 것이 힘들었어요.", options: ["① 좋아서", "② 피곤해서", "③ 가까워서", "④ 복잡해서"], ans: 4 },
+          { id: 9, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "제 친구는 예전에는 머리가 길었는데 지금은 _________.", options: ["① 커요", "② 작아요", "③ 짧아요", "④ 많아요"], ans: 3 },
+          { id: 10, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "올해 동생이 태어났는데 정말 _________.", options: ["① 잘해요", "② 쉬워요", "③ 시원해요", "④ 귀여워요"], ans: 4 },
+          { id: 11, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 어젯밤에 시끄러워서 잠을 못 잤어요.\n나: 많이 _________.", options: ["① 피곤합시다", "② 피곤할까요", "③ 피곤하겠어요", "④ 피곤하지 않아요"], ans: 3 },
+          { id: 12, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 축구를 좋아해요?\n나: 축구 _________ 안 좋아하지만 보는 것은 좋아해요.", options: ["① 하는데", "② 하려고", "③ 하는 것은", "④ 하기 전에"], ans: 3 },
+          { id: 13, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 내일은 지각하지 마세요.\n나: 알겠어요. 내일은 일찍 _________.", options: ["① 오네요", "② 올게요", "③ 오겠네요", "④ 오지 않아요"], ans: 2 },
+          { id: 14, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 집에서 학교까지 5분 걸려요.\n나: 와, 집이 아주 _________.", options: ["① 가깝네요", "② 가까워야 돼요", "③ 가깝고 싶어요", "④ 가깝지 못해요"], ans: 1 },
+          { id: 15, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 명동에 옷 가게가 많이 있어요. 가영 씨 _________ 들었어요.\n나: 그런데 명동은 너무 복잡해요.", options: ["① 에", "② 하고", "③ 에서", "④ 한테서"], ans: 4 },
+          { id: 16, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 귀걸이를 선물하려고 하는데 어디에 가는 것이 좋을까요?\n나: 강남에 한번 _________. 강남에 귀걸이 가게가 많아요.", options: ["① 가네요", "② 가는데요", "③ 가 보세요", "④ 가지 않아요"], ans: 3 },
+          { id: 17, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 프엉 씨가 누구예요?\n나: _________ 가방을 메고 있는 사람이 프엉 씨예요.", options: ["① 낮은", "② 빠른", "③ 높은", "④ 큰"], ans: 4 },
+          { id: 18, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 어머니_________ 자주 전화를 해요?\n나: 아니요, 바빠서 자주 전화를 못해요.", options: ["① 께", "② 께서", "③ 밖에", "④ 한테서"], ans: 1 },
+          { id: 19, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.\nChoose the main idea of the text. Use <Example> as a reference.", text: "삼만원 받았습니다. 영수증 드릴까요?", options: ["① 계산", "② 취소", "③ 선물", "④ 장소"], ans: 1 },
+          { id: 20, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.\nChoose the main idea of the text. Use <Example> as a reference.", text: "마트에서 소고기하고 돼지고기를 사요. 야채도 사요.", options: ["① 양념", "② 할인", "③ 식기", "④ 식재료"], ans: 4 }
         ]
       },
       unit6_10: {
-        title: "Part 03 : 초급2 · 6과~10과",
+        title: "초급 2 · 6과~10과",
         questions: [
-          { id: 1, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "감기에 걸려서 _________을/를 해요.", options: ["① 기침", "② 두통", "③ 콧물", "④ 배탈"], ans: 1 },
-          { id: 2, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "도서관에서 지켜야 되는 _________이/가 있어요?", options: ["① 모임", "② 규칙", "③ 성적", "④ 게시판"], ans: 2 },
-          { id: 3, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "콧물이 나와서 _________을/를 먹었어요.", options: ["① 수술", "② 치료", "③ 감기약", "④ 소화제"], ans: 3 },
-          { id: 4, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "아침에 늦게 일어나서 수업에 _________ 했어요. 늦어서 죄송해요.", options: ["① 출석", "② 결석", "③ 학기", "④ 지각"], ans: 4 },
-          { id: 5, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "이번 방학 때 해외여행을 가기로 했어요. 그래서 미리 계획을 _________.", options: ["① 세웠어요", "② 부러웠어요", "③ 예매했어요", "④ 연락했어요"], ans: 1 },
-          { id: 6, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "표가 다 팔리고 한 장만 _________.", options: ["① 썼어요", "② 남았어요", "③ 없었어요", "④ 빌렸어요"], ans: 2 },
-          { id: 7, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "저는 평일에 운동할 시간이 거의 없어서 _________에는 꼭 운동을 해요.", options: ["① 하루", "② 내일", "③ 휴일", "④ 지금"], ans: 3 },
-          { id: 8, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "저는 _________ 한국어를 공부해요. 매일 두 시간씩 공부해요.", options: ["① 늘", "② 거의", "③ 가끔", "④ 매주"], ans: 1 },
-          { id: 9, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "제주도는 _________이/가 아름다워요.", options: ["① 관광", "② 정보", "③ 여행", "④ 경치"], ans: 4 },
-          { id: 10, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "영화가 _________ 잠을 자고 싶었어요.", options: ["① 슬퍼서", "② 무서워서", "③ 지루해서", "④ 재미있어서"], ans: 3 },
-          { id: 11, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 선생님이 칠판에 무슨 말을 썼어요?\n나: 새로 나온 단어를 다섯 번 _________. 오늘 숙제는 새로 나온 단어 다섯 번 쓰기예요.", options: ["① 쓸 것", "② 쓸 게", "③ 쓰 네", "④ 쓸 까"], ans: 1 },
-          { id: 12, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 잘 들려요?\n나: 안 들려요. _________ 이야기해 주세요.", options: ["① 큰데", "② 크게", "③ 크지만", "④ 크려고"], ans: 2 },
-          { id: 13, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 카드로 계산할까요?\n나: 네, 현금이 없어서 카드로 _________.", options: ["① 계산해 보세요", "② 계산하지 마세요", "③ 계산할 수밖에 없어요", "④ 계산한 적이 있어요"], ans: 3 },
-          { id: 14, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 창문을 닫을까요?\n나: 더우니까 창문을 _________.", options: ["① 닫네요", "② 닫아 보세요", "③ 닫기로 해요", "④ 닫지 마세요"], ans: 4 },
-          { id: 15, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 삼겹살을 _________?\n나: 아니요, 삼겹살을 안 먹어 봤어요.", options: ["① 먹어요", "② 먹을까요", "③ 먹는데요", "④ 먹어 본 적이 있어요"], ans: 4 },
-          { id: 16, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 우리 주말에 같이 밥을 먹어요.\n나: 좋아요. 이 식당 음식이 맛있을 것 같은데 이 식당에 _________?", options: ["① 가 볼게요", "② 가 볼래요", "③ 가 주세요", "④ 갈 것 같아요"], ans: 2 },
-          { id: 17, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 주말에 특별하게 하는 것이 있어요?\n나: 저는 요즘 주말_________ 산에 가요.", options: ["① 마다", "② 하고", "③ 에서", "④ 부터"], ans: 1 },
-          { id: 18, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 이분이 제 아버지세요.\n나: 와, 정말 _________.", options: ["① 멋있겠네요", "② 멋있을래요", "③ 멋있지만요", "④ 멋있으신데요"], ans: 4 },
-          { id: 19, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.", text: "오늘은 이 지역의 음식을 먹어 보고 유명한 장소에도 가기로 했어요.", options: ["① 여가", "② 경치", "③ 관광", "④ 예매"], ans: 3 },
-          { id: 20, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.", text: "이번 방학 때는 열심히 운동을 하고 날마다 한 시간씩 한국어 공부도 할 거예요.", options: ["① 계획", "② 정보", "③ 감정", "④ 취미"], ans: 1 }
+          { id: 1, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "감기에 걸려서 _________을/를 해요.", options: ["① 기침", "② 두통", "③ 콧물", "④ 배탈"], ans: 1 },
+          { id: 2, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "도서관에서 지켜야 되는 _________이/가 있어요?", options: ["① 모임", "② 규칙", "③ 성적", "④ 게시판"], ans: 2 },
+          { id: 3, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "콧물이 나와서 _________을/를 먹었어요.", options: ["① 수술", "② 치료", "③ 감기약", "④ 소화제"], ans: 3 },
+          { id: 4, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "아침에 늦게 일어나서 수업에 _________ 했어요. 늦어서 죄송해요.", options: ["① 출석", "② 결석", "③ 학기", "④ 지각"], ans: 4 },
+          { id: 5, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "이번 방학 때 해외여행을 가기로 했어요. 그래서 미리 계획을 _________.", options: ["① 세웠어요", "② 부러웠어요", "③ 예매했어요", "④ 연락했어요"], ans: 1 },
+          { id: 6, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "표가 다 팔리고 한 장만 _________.", options: ["① 썼어요", "② 남았어요", "③ 없었어요", "④ 빌렸어요"], ans: 2 },
+          { id: 7, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "저는 평일에 운동할 시간이 거의 없어서 _________에는 꼭 운동을 해요.", options: ["① 하루", "② 내일", "③ 휴일", "④ 지금"], ans: 3 },
+          { id: 8, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "저는 _________ 한국어를 공부해요. 매일 두 시간씩 공부해요.", options: ["① 늘", "② 거의", "③ 가끔", "④ 매주"], ans: 1 },
+          { id: 9, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "제주도는 _________이/가 아름다워요.", options: ["① 관광", "② 정보", "③ 여행", "④ 경치"], ans: 4 },
+          { id: 10, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "영화가 _________ 잠을 자고 싶었어요.", options: ["① 슬퍼서", "② 무서워서", "③ 지루해서", "④ 재미있어서"], ans: 3 },
+          { id: 11, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 선생님이 칠판에 무슨 말을 썼어요?\n나: 새로 나온 단어를 다섯 번 _________. 오늘 숙제는 새로 나온 단어 다섯 번 쓰기예요.", options: ["① 쓸 것", "② 쓸 게", "③ 쓰 네", "④ 쓸 까"], ans: 1 },
+          { id: 12, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 잘 들려요?\n나: 안 들려요. _________ 이야기해 주세요.", options: ["① 큰데", "② 크게", "③ 크지만", "④ 크려고"], ans: 2 },
+          { id: 13, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 카드로 계산할까요?\n나: 네, 현금이 없어서 카드로 _________.", options: ["① 계산해 보세요", "② 계산하지 마세요", "③ 계산할 수밖에 없어요", "④ 계산한 적이 있어요"], ans: 3 },
+          { id: 14, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 창문을 닫을까요?\n나: 더우니까 창문을 _________.", options: ["① 닫네요", "② 닫아 보세요", "③ 닫기로 해요", "④ 닫지 마세요"], ans: 4 },
+          { id: 15, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 삼겹살을 _________?\n나: 아니요, 삼겹살을 안 먹어 봤어요.", options: ["① 먹어요", "② 먹을까요", "③ 먹는데요", "④ 먹어 본 적이 있어요"], ans: 4 },
+          { id: 16, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 우리 주말에 같이 밥을 먹어요.\n나: 좋아요. 이 식당 음식이 맛있을 것 같은데 이 식당에 _________?", options: ["① 가 볼게요", "② 가 볼래요", "③ 가 주세요", "④ 갈 것 같아요"], ans: 2 },
+          { id: 17, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 주말에 특별하게 하는 것이 있어요?\n나: 저는 요즘 주말_________ 산에 가요.", options: ["① 마다", "② 하고", "③ 에서", "④ 부터"], ans: 1 },
+          { id: 18, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 이분이 제 아버지세요.\n나: 와, 정말 _________.", options: ["① 멋있겠네요", "② 멋있을래요", "③ 멋있지만요", "④ 멋있으신데요"], ans: 4 },
+          { id: 19, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.\nChoose the main idea of the text. Use <Example> as a reference.", text: "오늘은 이 지역의 음식을 먹어 보고 유명한 장소에도 가기로 했어요.", options: ["① 여가", "② 경치", "③ 관광", "④ 예매"], ans: 3 },
+          { id: 20, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.\nChoose the main idea of the text. Use <Example> as a reference.", text: "이번 방학 때는 열심히 운동을 하고 날마다 한 시간씩 한국어 공부도 할 거예요.", options: ["① 계획", "② 정보", "③ 감정", "④ 취미"], ans: 1 }
         ]
       },
       unit11_15: {
-        title: "Part 03 : 초급2 · 11과~15과",
+        title: "초급 2 · 11과~15과",
         questions: [
-          { id: 1, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "_________이/가 없어요. 그래서 연락을 못 했어요.", options: ["① 우산", "② 안경", "③ 휴대폰", "④ 신분증"], ans: 3 },
-          { id: 2, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "친구를 만나러 가다가 지갑을 _________ 와서 다시 집으로 갔다.", options: ["① 주고", "② 하고", "③ 두고", "④ 적고"], ans: 3 },
-          { id: 3, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "내가 세탁기를 _________ 오빠가 설거지를 해 줘.", options: ["① 할게", "② 돌릴게", "③ 닦을게", "④ 버릴게"], ans: 2 },
-          { id: 4, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "신발은 밖에 두면 _________ 수 있기 때문에 저기 신발장 안에 넣어야 합니다.", options: ["① 찾을", "② 이용할", "③ 가져올", "④ 잃어버릴"], ans: 4 },
-          { id: 5, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "이 건물은 엘리베이터가 있어서 _________.", options: ["① 편리해요", "② 다녀와요", "③ 이용해요", "④ 갈아타요"], ans: 1 },
-          { id: 6, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "지금 짜장면을 시키면 길이 막혀서 30분 정도 _________.", options: ["① 걸려요", "② 끝나요", "③ 나와요", "④ 주문해요"], ans: 1 },
-          { id: 7, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "프라이드 치킨 두 _________하고 콜라 하나 주세요.", options: ["① 번", "② 명", "③ 그릇", "④ 마리"], ans: 4 },
-          { id: 8, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "저는 성격이 좋고 약속을 잘 _________ 사람을 좋아해요.", options: ["① 돕는", "② 지키는", "③ 세우는", "④ 알아보는"], ans: 2 },
-          { id: 9, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "부모님이 집에 안 계시니까 우리가 집안일을 _________ 하자.", options: ["① 나눠서", "② 더해서", "③ 생겨서", "④ 돌려서"], ans: 1 },
-          { id: 10, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "쯔엉 씨는 아는 것이 정말 많아요. _________ 사람이에요.", options: ["① 착한", "② 똑똑한", "③ 게으른", "④ 친절한"], ans: 2 },
-          { id: 11, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 한국어 수업이 언제예요?\n나: 4시 _________ 5시 30분까지예요.", options: ["① 에", "② 에게", "③ 에는", "④ 에서부터"], ans: 4 },
-          { id: 12, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 이 사진 언제 찍었어요?\n나: 작년에 친구하고 여행 가서 _________ 사진이에요.", options: ["① 찍는", "② 찍은", "③ 찍을", "④ 찍고 있는"], ans: 2 },
-          { id: 13, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 음악을 듣는 것 좋아해요?\n나: 네. 저는 특히 음악을 _________ 산책하는 것을 좋아해요.", options: ["① 들으러", "② 들으니까", "③ 들으면서", "④ 듣는데"], ans: 3 },
-          { id: 14, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 어제 민지 씨 집에서 재미있게 놀았어요?\n나: 네. 재미있었어요. 민지 씨가 떡볶이도 _________.", options: ["① 만들어 줬어요", "② 만들어야 돼요", "③ 만들기로 했어요", "④ 만든 적이 있어요"], ans: 1 },
-          { id: 15, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 잠시만 여기서 기다려 주세요.\n나: 네. _________ 여기에 있는 책을 읽어도 되지요?", options: ["① 기다리지만", "② 기다린 후에", "③ 기다리기 때문에", "④ 기다리는 동안에"], ans: 4 },
-          { id: 16, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 수지 씨, 오늘 많이 바빠요?\n나: 네. 아르바이트 _________ 친구와 약속도 있어서 바쁠 것 같아요.", options: ["① 부터", "② 마다", "③ 보다", "④ 에다가"], ans: 4 },
-          { id: 17, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 와, 식당에 사람이 정말 많네요.\n나: 이 식당은 비싸지만 _________ 손님이 많아요.", options: ["① 맛있는데", "② 맛있기 때문에", "③ 맛있어야 돼서", "④ 맛있을 수밖에 없어서"], ans: 2 },
-          { id: 18, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 왜 커피를 안 마셔요?\n나: 커피를 _________ 잠을 잘 못 자요.", options: ["① 마시면", "② 마시지만", "③ 마시는데", "④ 마시면서"], ans: 1 },
-          { id: 19, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.", text: "오늘은 너무 바쁘니까 피자나 짜장면을 시켜 먹을까요?", options: ["① 집안일", "② 한국 음식", "③ 배달 음식", "④ 편의 시설"], ans: 3 },
-          { id: 20, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.", text: "늦은 밤에도 필요한 물건을 살 수 있어서 편리해요.", options: ["① 카페", "② 시장", "③ 편의점", "④ 백화점"], ans: 3 }
+          { id: 1, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "_________이/가 없어요. 그래서 연락을 못 했어요.", options: ["① 우산", "② 안경", "③ 휴대폰", "④ 신분증"], ans: 3 },
+          { id: 2, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "친구를 만나러 가다가 지갑을 _________ 와서 다시 집으로 갔다.", options: ["① 주고", "② 하고", "③ 두고", "④ 적고"], ans: 3 },
+          { id: 3, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "내가 세탁기를 _________ 오빠가 설거지를 해 줘.", options: ["① 할게", "② 돌릴게", "③ 닦을게", "④ 버릴게"], ans: 2 },
+          { id: 4, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "신발은 밖에 두면 _________ 수 있기 때문에 저기 신발장 안에 넣어야 합니다.", options: ["① 찾을", "② 이용할", "③ 가져올", "④ 잃어버릴"], ans: 4 },
+          { id: 5, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "이 건물은 엘리베이터가 있어서 _________.", options: ["① 편리해요", "② 다녀와요", "③ 이용해요", "④ 갈아타요"], ans: 1 },
+          { id: 6, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "지금 짜장면을 시키면 길이 막혀서 30분 정도 _________.", options: ["① 걸려요", "② 끝나요", "③ 나와요", "④ 주문해요"], ans: 1 },
+          { id: 7, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "프라이드 치킨 두 _________하고 콜라 하나 주세요.", options: ["① 번", "② 명", "③ 그릇", "④ 마리"], ans: 4 },
+          { id: 8, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "저는 성격이 좋고 약속을 잘 _________ 사람을 좋아해요.", options: ["① 돕는", "② 지키는", "③ 세우는", "④ 알아보는"], ans: 2 },
+          { id: 9, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "부모님이 집에 안 계시니까 우리가 집안일을 _________ 하자.", options: ["① 나눠서", "② 더해서", "③ 생겨서", "④ 돌려서"], ans: 1 },
+          { id: 10, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "쯔엉 씨는 아는 것이 정말 많아요. _________ 사람이에요.", options: ["① 착한", "② 똑똑한", "③ 게으른", "④ 친절한"], ans: 2 },
+          { id: 11, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 한국어 수업이 언제예요?\n나: 4시 _________ 5시 30분까지예요.", options: ["① 에", "② 에게", "③ 에는", "④ 에서부터"], ans: 4 },
+          { id: 12, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 이 사진 언제 찍었어요?\n나: 작년에 친구하고 여행 가서 _________ 사진이에요.", options: ["① 찍는", "② 찍은", "③ 찍을", "④ 찍고 있는"], ans: 2 },
+          { id: 13, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 음악을 듣는 것 좋아해요?\n나: 네. 저는 특히 음악을 _________ 산책하는 것을 좋아해요.", options: ["① 들으러", "② 들으니까", "③ 들으면서", "④ 듣는데"], ans: 3 },
+          { id: 14, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 어제 민지 씨 집에서 재미있게 놀았어요?\n나: 네. 재미있었어요. 민지 씨가 떡볶이도 _________.", options: ["① 만들어 줬어요", "② 만들어야 돼요", "③ 만들기로 했어요", "④ 만든 적이 있어요"], ans: 1 },
+          { id: 15, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 잠시만 여기서 기다려 주세요.\n나: 네. _________ 여기에 있는 책을 읽어도 되지요?", options: ["① 기다리지만", "② 기다린 후에", "③ 기다리기 때문에", "④ 기다리는 동안에"], ans: 4 },
+          { id: 16, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 수지 씨, 오늘 많이 바빠요?\n나: 네. 아르바이트 _________ 친구와 약속도 있어서 바쁠 것 같아요.", options: ["① 부터", "② 마다", "③ 보다", "④ 에다가"], ans: 4 },
+          { id: 17, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 와, 식당에 사람이 정말 많네요.\n나: 이 식당은 비싸지만 _________ 손님이 많아요.", options: ["① 맛있는데", "② 맛있기 때문에", "③ 맛있어야 돼서", "④ 맛있을 수밖에 없어서"], ans: 2 },
+          { id: 18, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 왜 커피를 안 마셔요?\n나: 커피를 _________ 잠을 잘 못 자요.", options: ["① 마시면", "② 마시지만", "③ 마시는데", "④ 마시면서"], ans: 1 },
+          { id: 19, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.\nChoose the main idea of the text. Use <Example> as a reference.", text: "오늘은 너무 바쁘니까 피자나 짜장면을 시켜 먹을까요?", options: ["① 집안일", "② 한국 음식", "③ 배달 음식", "④ 편의 시설"], ans: 3 },
+          { id: 20, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.\nChoose the main idea of the text. Use <Example> as a reference.", text: "늦은 밤에도 필요한 물건을 살 수 있어서 편리해요.", options: ["① 카페", "② 시장", "③ 편의점", "④ 백화점"], ans: 3 }
         ]
       },
       unit16_20: {
-        title: "Part 03 : 초급2 · 16과~20과",
+        title: "초급 2 · 16과~20과",
         questions: [
-          { id: 1, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "날씨가 추워서 코트를 _________.", options: ["① 썼어요", "② 했어요", "③ 입었어요", "④ 신었어요"], ans: 3 },
-          { id: 2, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "이 티셔츠가 커서 작은 _________로/으로 바꾸고 싶어요.", options: ["① 가격", "② 색깔", "③ 디자인", "④ 사이즈"], ans: 4 },
-          { id: 3, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "저는 가끔 피아노를 _________.", options: ["① 켜요", "② 쳐요", "③ 타요", "④ 내요"], ans: 2 },
-          { id: 4, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "저는 _________ 타는 것을 좋아해요.", options: ["① 기타", "② 독서", "③ 테니스", "④ 스케이트"], ans: 4 },
-          { id: 5, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "친구 생일 파티에 초대를 _________.", options: ["① 썼어요", "② 줬어요", "③ 받았어요", "④ 보냈어요"], ans: 3 },
-          { id: 6, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "친한 친구를 다시 만나서 _________ 기분이에요.", options: ["① 지루한", "② 섭섭한", "③ 외로운", "④ 행복한"], ans: 4 },
-          { id: 7, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "하숙집이 학교에서 _________ 때문에 조금 불편해요.", options: ["① 멀기", "② 좁기", "③ 복잡하기", "④ 시끄럽기"], ans: 1 },
-          { id: 8, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가족 모두 _________에 있는 소파에 앉아서 텔레비전을 보고 있어요.", options: ["① 거실", "② 교실", "③ 부엌", "④ 화장실"], ans: 1 },
-          { id: 9, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "시간이 없어서 친구의 부탁을 _________.", options: ["① 받았어요", "② 생겼어요", "③ 구경했어요", "④ 거절했어요"], ans: 4 },
-          { id: 10, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "일이 _________ 약속을 못 지켰어요.", options: ["① 생겨서", "② 걸려서", "③ 세워서", "④ 정해서"], ans: 1 },
-          { id: 11, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "리사 씨는 가수 _________ 노래를 아주 잘해요.", options: ["① 마다", "② 처럼", "③ 에게로", "④ 에게서"], ans: 2 },
-          { id: 12, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 이거 한번 _________?\n나: 물론이죠. 입어 보세요.", options: ["① 입어 볼 거예요", "② 입어 봐도 돼요", "③ 입어 보고 싶어요", "④ 입어 보려고 해요"], ans: 2 },
-          { id: 13, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "저는 시간이 _________ 영화를 봐요.", options: ["① 있거나", "② 있다가", "③ 있지만", "④ 있을 때"], ans: 4 },
-          { id: 14, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 왜 한국어를 공부했어요?\n나: 한국 드라마를 좋아해서 한국어를 _________.", options: ["① 공부할 거예요", "② 공부해도 돼요", "③ 공부해야 해요", "④ 공부하게 됐어요"], ans: 4 },
-          { id: 15, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 바이올린을 아주 잘 켜네요. 바이올린을 _________ 얼마나 됐어요?\n나: 5년 정도 됐어요.", options: ["① 배우면", "② 배우는", "③ 배운 지", "④ 배울 때"], ans: 3 },
-          { id: 16, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 수아 돌잔치에 뭘 가져 갈까요?\n나: 그냥 오시면 돼요. 필요한 건 다 _________.", options: ["① 준비되었군요", "② 준비해 주세요", "③ 준비되어 있어요", "④ 준비하고 싶어요"], ans: 3 },
-          { id: 17, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 이번 주말에 뭐 할 거예요?\n나: 저는 집에서 _________ 친구를 만나려고 해요.", options: ["① 쉰 지", "② 쉬거나", "③ 쉬려고", "④ 쉬지만"], ans: 2 },
-          { id: 18, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.", text: "가: 지훈 씨, 지금 원룸에서 살고 있지요? 어때요?\n나: 혼자 살기 때문에 조금 외로워요. 다음 학기에는 기숙사에서 _________.", options: ["① 살까 봐요", "② 살고 있어요", "③ 살아 봤어요", "④ 살아도 돼요"], ans: 1 },
-          { id: 19, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.", text: "이사한 집에 친구들을 초대해서 하는 파티예요.", options: ["① 공연", "② 계획", "③ 집들이", "④ 가족 모임"], ans: 3 },
-          { id: 20, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.", text: "아이의 첫 번째 생일이에요. 사람들이 모여서 축하해요.", options: ["① 소풍", "② 여행", "③ 돌잔치", "④ 결혼식"], ans: 3 }
+          { id: 1, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "날씨가 추워서 코트를 _________.", options: ["① 썼어요", "② 했어요", "③ 입었어요", "④ 신었어요"], ans: 3 },
+          { id: 2, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "이 티셔츠가 커서 작은 _________로/으로 바꾸고 싶어요.", options: ["① 가격", "② 색깔", "③ 디자인", "④ 사이즈"], ans: 4 },
+          { id: 3, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "저는 가끔 피아노를 _________.", options: ["① 켜요", "② 쳐요", "③ 타요", "④ 내요"], ans: 2 },
+          { id: 4, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "저는 _________ 타는 것을 좋아해요.", options: ["① 기타", "② 독서", "③ 테니스", "④ 스케이트"], ans: 4 },
+          { id: 5, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "친구 생일 파티에 초대를 _________.", options: ["① 썼어요", "② 줬어요", "③ 받았어요", "④ 보냈어요"], ans: 3 },
+          { id: 6, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "친한 친구를 다시 만나서 _________ 기분이에요.", options: ["① 지루한", "② 섭섭한", "③ 외로운", "④ 행복한"], ans: 4 },
+          { id: 7, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "하숙집이 학교에서 _________ 때문에 조금 불편해요.", options: ["① 멀기", "② 좁기", "③ 복잡하기", "④ 시끄럽기"], ans: 1 },
+          { id: 8, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가족 모두 _________에 있는 소파에 앉아서 텔레비전을 보고 있어요.", options: ["① 거실", "② 교실", "③ 부엌", "④ 화장실"], ans: 1 },
+          { id: 9, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "시간이 없어서 친구의 부탁을 _________.", options: ["① 받았어요", "② 생겼어요", "③ 구경했어요", "④ 거절했어요"], ans: 4 },
+          { id: 10, inst: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "일이 _________ 약속을 못 지켰어요.", options: ["① 생겨서", "② 걸려서", "③ 세워서", "④ 정해서"], ans: 1 },
+          { id: 11, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "리사 씨는 가수 _________ 노래를 아주 잘해요.", options: ["① 마다", "② 처럼", "③ 에게로", "④ 에게서"], ans: 2 },
+          { id: 12, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 이거 한번 _________?\n나: 물론이죠. 입어 보세요.", options: ["① 입어 볼 거예요", "② 입어 봐도 돼요", "③ 입어 보고 싶어요", "④ 입어 보려고 해요"], ans: 2 },
+          { id: 13, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "저는 시간이 _________ 영화를 봐요.", options: ["① 있거나", "② 있다가", "③ 있지만", "④ 있을 때"], ans: 4 },
+          { id: 14, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 왜 한국어를 공부했어요?\n나: 한국 드라마를 좋아해서 한국어를 _________.", options: ["① 공부할 거예요", "② 공부해도 돼요", "③ 공부해야 해요", "④ 공부하게 됐어요"], ans: 4 },
+          { id: 15, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 바이올린을 아주 잘 켜네요. 바이올린을 _________ 얼마나 됐어요?\n나: 5년 정도 됐어요.", options: ["① 배우면", "② 배우는", "③ 배운 지", "④ 배울 때"], ans: 3 },
+          { id: 16, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 수아 돌잔치에 뭘 가져 갈까요?\n나: 그냥 오시면 돼요. 필요한 건 다 _________.", options: ["① 준비되었군요", "② 준비해 주세요", "③ 준비되어 있어요", "④ 준비하고 싶어요"], ans: 3 },
+          { id: 17, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 이번 주말에 뭐 할 거예요?\n나: 저는 집에서 _________ 친구를 만나려고 해요.", options: ["① 쉰 지", "② 쉬거나", "③ 쉬려고", "④ 쉬지만"], ans: 2 },
+          { id: 18, inst: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.\nChoose the correct answer to fill in the blank. Use <Example> as a reference.", text: "가: 지훈 씨, 지금 원룸에서 살고 있지요? 어때요?\n나: 혼자 살기 때문에 조금 외로워요. 다음 학기에는 기숙사에서 _________.", options: ["① 살까 봐요", "② 살고 있어요", "③ 살아 봤어요", "④ 살아도 돼요"], ans: 1 },
+          { id: 19, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.\nChoose the main idea of the text. Use <Example> as a reference.", text: "이사한 집에 친구들을 초대해서 하는 파티예요.", options: ["① 공연", "② 계획", "③ 집들이", "④ 가족 모임"], ans: 3 },
+          { id: 20, inst: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.\nChoose the main idea of the text. Use <Example> as a reference.", text: "아이의 첫 번째 생일이에요. 사람들이 모여서 축하해요.", options: ["① 소풍", "② 여행", "③ 돌잔치", "④ 결혼식"], ans: 3 }
         ]
       }
     };
 
+    // State Variables
     let currentUnitKey = '';
     let currentQuestions = [];
     let currentIndex = 0;
@@ -560,13 +725,15 @@
     let correctCount = 0;
     let myChart = null;
 
+    // View Navigation Logic
     function goHome() {
       document.getElementById('unitScreen').classList.remove('hidden');
       document.getElementById('quizScreen').classList.add('hidden');
       document.getElementById('resultScreen').classList.add('hidden');
-      document.getElementById('homeBtn').classList.add('hidden');
-      document.getElementById('appTitle').innerText = '세종학당 한국어 2 종합문제';
-      document.getElementById('appSubTitle').innerText = '초급 2 연습 문제';
+      document.getElementById('backBtn').classList.add('hidden');
+      document.getElementById('headerTag').innerHTML = '<i class="fa-solid fa-book-open"></i> 세종학당 한국어 2';
+      document.getElementById('appTitle').innerText = '종합문제 연습';
+      document.getElementById('appSubTitle').innerText = '풀이할 단원을 선택해 주세요';
     }
 
     function startUnit(unitKey) {
@@ -580,19 +747,21 @@
       document.getElementById('unitScreen').classList.add('hidden');
       document.getElementById('quizScreen').classList.remove('hidden');
       document.getElementById('resultScreen').classList.add('hidden');
-      document.getElementById('homeBtn').classList.remove('hidden');
+      document.getElementById('backBtn').classList.remove('hidden');
+      document.getElementById('headerTag').innerHTML = '<i class="fa-solid fa-layer-group"></i> Part 03';
       document.getElementById('appTitle').innerText = unit.title;
-      document.getElementById('appSubTitle').innerText = `총 ${currentQuestions.length}문제`;
+      document.getElementById('appSubTitle').innerText = `총 ${currentQuestions.length}문항`;
 
       renderQuestion();
     }
 
+    // Question Rendering and Option Handling
     function renderQuestion() {
       const q = currentQuestions[currentIndex];
       const total = currentQuestions.length;
 
       document.getElementById('progressBar').style.width = `${((currentIndex) / total) * 100}%`;
-      document.getElementById('questionNumber').innerText = `문제 ${currentIndex + 1} / ${total}`;
+      document.getElementById('questionStepBadge').innerText = `문항 ${currentIndex + 1} / ${total}`;
       document.getElementById('instructionText').innerText = q.inst;
       document.getElementById('questionText').innerText = `${q.id}. ${q.text}`;
 
@@ -602,20 +771,19 @@
       q.options.forEach((optText, idx) => {
         const btn = document.createElement('button');
         btn.className = 'option-btn';
-        btn.innerText = optText;
+        btn.innerHTML = `<span>${optText}</span><span class="status-icon"></span>`;
         btn.onclick = () => selectOption(idx + 1);
         optsContainer.appendChild(btn);
       });
 
       document.getElementById('feedbackBox').style.display = 'none';
-      document.getElementById('feedbackBox').className = 'feedback-box';
+      document.getElementById('feedbackBox').className = 'feedback-banner';
       document.getElementById('nextBtn').style.display = 'none';
     }
 
     function selectOption(selectedAns) {
       const q = currentQuestions[currentIndex];
       const buttons = document.querySelectorAll('.option-btn');
-
       buttons.forEach(btn => btn.disabled = true);
 
       const isCorrect = (selectedAns === q.ans);
@@ -626,26 +794,29 @@
       if (isCorrect) {
         correctCount++;
         buttons[selectedAns - 1].classList.add('selected-correct');
-        feedbackBox.className = 'feedback-box correct';
-        feedbackTitle.innerHTML = '✓ 정답입니다!';
-        feedbackDesc.innerText = '아주 잘하셨습니다.';
+        buttons[selectedAns - 1].querySelector('.status-icon').innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+        feedbackBox.className = 'feedback-banner correct';
+        feedbackTitle.innerHTML = '<i class="fa-solid fa-circle-check"></i> 정답입니다!';
+        feedbackDesc.innerText = '참 잘했습니다.';
       } else {
         wrongAnswers.push(q);
         buttons[selectedAns - 1].classList.add('selected-wrong');
+        buttons[selectedAns - 1].querySelector('.status-icon').innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
         buttons[q.ans - 1].classList.add('reveal-correct');
-        feedbackBox.className = 'feedback-box wrong';
-        feedbackTitle.innerHTML = '✕ 오답입니다.';
-        feedbackDesc.innerText = `정답은 ${q.options[q.ans - 1]} 입니다.`;
+        buttons[q.ans - 1].querySelector('.status-icon').innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+        feedbackBox.className = 'feedback-banner wrong';
+        feedbackTitle.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> 오답입니다.';
+        feedbackDesc.innerText = `정답은 "${q.options[q.ans - 1]}" 입니다.`;
       }
 
       feedbackBox.style.display = 'block';
 
       const nextBtn = document.getElementById('nextBtn');
-      nextBtn.style.display = 'block';
+      nextBtn.style.display = 'flex';
       if (currentIndex === currentQuestions.length - 1) {
-        nextBtn.innerText = '결과 확인하기';
+        nextBtn.innerHTML = '결과 확인하기 <i class="fa-solid fa-award"></i>';
       } else {
-        nextBtn.innerText = '다음 문제';
+        nextBtn.innerHTML = '다음 문제 <i class="fa-solid fa-arrow-right"></i>';
       }
     }
 
@@ -658,6 +829,7 @@
       }
     }
 
+    // Chart.js Result Dashboard Logic
     function showResults() {
       document.getElementById('quizScreen').classList.add('hidden');
       document.getElementById('resultScreen').classList.remove('hidden');
@@ -666,14 +838,16 @@
       const wrongCount = total - correctCount;
       const percentage = Math.round((correctCount / total) * 100);
 
-      document.getElementById('resultSummary').innerText = `${percentage}점 (${total}문제 중 ${correctCount}개 정답)`;
-      document.getElementById('resultScoreText').innerText = `정답 ${correctCount}개  |  오답 ${wrongCount}개`;
+      document.getElementById('resultRateText').innerText = `정답률 ${percentage}% (${correctCount}/${total})`;
+      document.getElementById('statCorrectCount').innerText = correctCount;
+      document.getElementById('statWrongCount').innerText = wrongCount;
+      document.getElementById('statTotalCount').innerText = total;
 
       const retryWrongBtn = document.getElementById('retryWrongBtn');
       if (wrongCount === 0) {
         retryWrongBtn.style.display = 'none';
       } else {
-        retryWrongBtn.style.display = 'block';
+        retryWrongBtn.style.display = 'flex';
       }
 
       renderChart(correctCount, wrongCount);
@@ -691,9 +865,9 @@
           labels: ['정답', '오답'],
           datasets: [{
             data: [correct, wrong],
-            backgroundColor: ['#10B981', '#EF4444'],
-            hoverOffset: 4,
-            borderWidth: 2,
+            backgroundColor: ['#059669', '#E11D48'],
+            hoverBackgroundColor: ['#047857', '#BE123C'],
+            borderWidth: 3,
             borderColor: '#FFFFFF'
           }]
         },
@@ -704,12 +878,13 @@
             legend: {
               position: 'bottom',
               labels: {
-                boxWidth: 12,
-                font: { size: 13 }
+                boxWidth: 10,
+                font: { size: 12, weight: '700' },
+                padding: 14
               }
             }
           },
-          cutout: '70%'
+          cutout: '72%'
         }
       });
     }
@@ -727,7 +902,7 @@
 
       document.getElementById('resultScreen').classList.add('hidden');
       document.getElementById('quizScreen').classList.remove('hidden');
-      document.getElementById('appSubTitle').innerText = `오답 다시 풀기 (${currentQuestions.length}문제)`;
+      document.getElementById('appSubTitle').innerText = `오답 복습 (${currentQuestions.length}문항)`;
 
       renderQuestion();
     }
