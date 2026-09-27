@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>세종학당 한국어 2 종합 문제 (16과~20과)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome CDN for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js CDN for pie chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .question-blank {
+      display: inline-block;
+      min-width: 68px;
+      height: 24px;
+      border-bottom: 2px solid #4b5563;
+      margin: 0 4px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between selection:bg-indigo-100 selection:text-indigo-800">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
+    <div class="max-w-2xl mx-auto px-4 py-3.5 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold text-sm shadow-sm">
+          03
+        </span>
+        <div>
+          <h1 class="font-bold text-slate-900 text-base leading-tight">종합문제 comprehension practice</h1>
+          <p class="text-xs text-slate-500 font-medium">초급2 · 16과~20과</p>
+        </div>
+      </div>
+      <div id="mode-badge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
+        전체 문제
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-2xl w-full mx-auto px-4 py-5 flex-1 flex flex-col justify-center">
+
+    <!-- QUIZ VIEW CONTAINER -->
+    <div id="quiz-container" class="space-y-4">
+      
+      <!-- Progress Bar & Question Counter -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80">
+        <div class="flex justify-between items-center text-xs font-semibold text-slate-500 mb-2">
+          <span id="progress-text" class="text-indigo-600 font-bold">문제 1 / 20</span>
+          <span id="score-counter">정답 <span class="text-emerald-600 font-bold" id="correct-count-live">0</span> · 오답 <span class="text-rose-500 font-bold" id="wrong-count-live">0</span></span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+          <div id="progress-bar-fill" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300 ease-out" style="width: 5%"></div>
+        </div>
+      </div>
+
+      <!-- Problem Section Title -->
+      <div id="section-info-box" class="bg-amber-50/80 border border-amber-200/70 rounded-xl p-3 text-xs leading-relaxed text-amber-900">
+        <div id="section-title" class="font-bold text-slate-800">[1~10] &lt;보기&gt;와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.</div>
+        <div id="section-desc" class="text-slate-500 mt-0.5">Choose the correct answer to fill in the blank. Use &lt;Example&gt; as a reference.</div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div class="flex items-start space-x-3 mb-6">
+          <span id="question-number-badge" class="inline-flex items-center justify-center shrink-0 w-8 h-8 rounded-xl bg-slate-900 text-white font-bold text-base shadow-sm">
+            1
+          </span>
+          <div id="question-text" class="text-lg md:text-xl font-medium text-slate-900 leading-relaxed pt-0.5">
+            <!-- Question prompt inserted here -->
+          </div>
+        </div>
+
+        <!-- Options List -->
+        <div id="options-list" class="space-y-3">
+          <!-- Dynamically populated options -->
+        </div>
+
+        <!-- Feedback Box -->
+        <div id="feedback-box" class="hidden mt-6 pt-5 border-t border-slate-100 transition-all duration-300">
+          <div id="feedback-alert" class="p-4 rounded-xl flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <span id="feedback-icon" class="text-2xl"></span>
+              <div>
+                <p id="feedback-title" class="font-bold text-sm md:text-base"></p>
+                <p id="feedback-desc" class="text-xs md:text-sm mt-0.5"></p>
+              </div>
+            </div>
+            <button id="next-btn" onclick="nextQuestion()" class="shrink-0 ml-3 px-5 py-2.5 rounded-xl font-bold text-sm text-white shadow-sm transition hover:opacity-95 focus:outline-none flex items-center space-x-1.5">
+              <span>다음 문제</span>
+              <i class="fa-solid fa-arrow-right text-xs"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RESULT VIEW CONTAINER (Initially Hidden) -->
+    <div id="result-container" class="hidden space-y-5">
+      <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200 text-center">
+        
+        <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-3xl mx-auto mb-4 border border-indigo-100 shadow-inner">
+          <i class="fa-solid fa-award"></i>
+        </div>
+
+        <h2 class="text-2xl font-black text-slate-900">학습을 완료했습니다!</h2>
+        <p id="result-subtitle" class="text-sm text-slate-500 mt-1">세종학당 한국어 2 종합 문제 결과 리포트</p>
+
+        <!-- Pie Chart Canvas -->
+        <div class="relative w-48 h-48 sm:w-56 sm:h-56 mx-auto my-6">
+          <canvas id="resultChart"></canvas>
+          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <span id="chart-accuracy" class="text-3xl font-extrabold text-slate-900 leading-none">0%</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">정답률</span>
+          </div>
+        </div>
+
+        <!-- Summary Stats Grid -->
+        <div class="grid grid-cols-3 gap-3 max-w-md mx-auto mb-6 text-center">
+          <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+            <p class="text-xs text-slate-500 font-medium">총 문제</p>
+            <p id="stat-total" class="text-xl font-bold text-slate-800 mt-0.5">20</p>
+          </div>
+          <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-100">
+            <p class="text-xs text-emerald-600 font-medium">정답</p>
+            <p id="stat-correct" class="text-xl font-bold text-emerald-700 mt-0.5">0</p>
+          </div>
+          <div class="p-3 rounded-2xl bg-rose-50 border border-rose-100">
+            <p class="text-xs text-rose-500 font-medium">오답</p>
+            <p id="stat-wrong" class="text-xl font-bold text-rose-600 mt-0.5">0</p>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
+          <button onclick="restartAll()" class="flex-1 py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold rounded-2xl text-sm transition flex items-center justify-center space-x-2 shadow-sm">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>다시 풀기</span>
+          </button>
+          <button id="btn-retry-wrong" onclick="retryIncorrect()" class="flex-1 py-3.5 px-4 bg-white border-2 border-rose-500 hover:bg-rose-50 active:bg-rose-100 text-rose-600 font-bold rounded-2xl text-sm transition flex items-center justify-center space-x-2 shadow-sm disabled:opacity-40 disabled:pointer-events-none">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>오답 다시 풀기</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-4 text-xs text-slate-400">
+    바로 배워 바로 쓰는 세종학당 한국어 2
+  </footer>
+
+  <script>
+    // Quiz Questions Data strictly preserved character-by-character
+    const ALL_QUESTIONS = [
+      {
+        num: 1,
+        sectionTitle: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "날씨가 추워서 코트를 <span class=\"question-blank\"></span>",
+        options: ["썼어요", "했어요", "입었어요", "신었어요"],
+        answer: 3
+      },
+      {
+        num: 2,
+        sectionTitle: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "이 티셔츠가 커서 작은 <span class=\"question-blank\"></span> 로/으로 바꾸고 싶어요.",
+        options: ["가격", "색깔", "디자인", "사이즈"],
+        answer: 4
+      },
+      {
+        num: 3,
+        sectionTitle: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "저는 가끔 피아노를 <span class=\"question-blank\"></span>",
+        options: ["켜요", "쳐요", "타요", "내요"],
+        answer: 2
+      },
+      {
+        num: 4,
+        sectionTitle: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "저는 <span class=\"question-blank\"></span> 타는 것을 좋아해요.",
+        options: ["기타", "독서", "테니스", "스케이트"],
+        answer: 4
+      },
+      {
+        num: 5,
+        sectionTitle: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "친구 생일 파티에 초대를 <span class=\"question-blank\"></span>",
+        options: ["썼어요", "줬어요", "받았어요", "보냈어요"],
+        answer: 3
+      },
+      {
+        num: 6,
+        sectionTitle: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "친한 친구를 다시 만나서 <span class=\"question-blank\"></span> 기분이에요.",
+        options: ["지루한", "섭섭한", "외로운", "행복한"],
+        answer: 4
+      },
+      {
+        num: 7,
+        sectionTitle: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "하숙집이 학교에서 <span class=\"question-blank\"></span> 때문에 조금 불편해요.",
+        options: ["멀기", "좁기", "복잡하기", "시끄럽기"],
+        answer: 1
+      },
+      {
+        num: 8,
+        sectionTitle: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "가족 모두 <span class=\"question-blank\"></span> 에 있는 소파에 앉아서 텔레비전을 보고 있어요.",
+        options: ["거실", "교실", "부엌", "화장실"],
+        answer: 1
+      },
+      {
+        num: 9,
+        sectionTitle: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "시간이 없어서 친구의 부탁을 <span class=\"question-blank\"></span>",
+        options: ["받았어요", "생겼어요", "구경했어요", "거절했어요"],
+        answer: 4
+      },
+      {
+        num: 10,
+        sectionTitle: "[1~10] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "일이 <span class=\"question-blank\"></span> 약속을 못 지켰어요.",
+        options: ["생겨서", "걸려서", "세워서", "정해서"],
+        answer: 1
+      },
+      {
+        num: 11,
+        sectionTitle: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "리사 씨는 가수 <span class=\"question-blank\"></span> 노래를 아주 잘해요.",
+        options: ["마다", "처럼", "에게로", "에게서"],
+        answer: 2
+      },
+      {
+        num: 12,
+        sectionTitle: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "가: 이거 한번 <span class=\"question-blank\"></span> ?<br>나: 물론이죠. 입어 보세요.",
+        options: ["입어 볼 거예요", "입어 봐도 돼요", "입어 보고 싶어요", "입어 보려고 해요"],
+        answer: 2
+      },
+      {
+        num: 13,
+        sectionTitle: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "저는 시간이 <span class=\"question-blank\"></span> 영화를 봐요.",
+        options: ["있거나", "있다가", "있지만", "있을 때"],
+        answer: 4
+      },
+      {
+        num: 14,
+        sectionTitle: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "가: 왜 한국어를 공부했어요?<br>나: 한국 드라마를 좋아해서 한국어를 <span class=\"question-blank\"></span>",
+        options: ["공부할 거예요", "공부해도 돼요", "공부해야 해요", "공부하게 됐어요"],
+        answer: 4
+      },
+      {
+        num: 15,
+        sectionTitle: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "가: 바이올린을 아주 잘 켜네요. 바이올린을 <span class=\"question-blank\"></span> 얼마나 됐어요?<br>나: 5년 정도 됐어요.",
+        options: ["배우면", "배우는", "배운 지", "배울 때"],
+        answer: 3
+      },
+      {
+        num: 16,
+        sectionTitle: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "가: 수아 돌잔치에 뭘 가져 갈까요?<br>나: 그냥 오시면 돼요. 필요한 건 다 <span class=\"question-blank\"></span>",
+        options: ["준비되었군요", "준비해 주세요", "준비되어 있어요", "준비하고 싶어요"],
+        answer: 3
+      },
+      {
+        num: 17,
+        sectionTitle: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "가: 이번 주말에 뭐 할 거예요?<br>나: 저는 집에서 <span class=\"question-blank\"></span> 친구를 만나려고 해요.",
+        options: ["쉰지", "쉬거나", "쉬려고", "쉬지만"],
+        answer: 2
+      },
+      {
+        num: 18,
+        sectionTitle: "[11~18] <보기>와 같이 빈칸에 들어갈 가장 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the correct answer to fill in the blank. Use <Example> as a reference.",
+        promptHtml: "가: 지훈 씨, 지금 원룸에서 살고 있지요? 어때요?<br>나: 혼자 살기 때문에 조금 외로워요 다음 학기에는 기숙사에서 <span class=\"question-blank\"></span>",
+        options: ["살까 봐요", "살고 있어요", "살아 봤어요", "살아도 돼요"],
+        answer: 1
+      },
+      {
+        num: 19,
+        sectionTitle: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the main idea of the text. Use <Example> as a reference.",
+        promptHtml: "이사한 집에 친구들을 초대해서 하는 파티예요.",
+        options: ["공연", "계획", "집들이", "가족 모임"],
+        answer: 3
+      },
+      {
+        num: 20,
+        sectionTitle: "[19~20] 무엇에 대한 이야기예요? <보기>와 같이 알맞은 것을 고르세요.",
+        sectionDesc: "Choose the main idea of the text. Use <Example> as a reference.",
+        promptHtml: "아이의 첫 번째 생일이에요. 사람들이 모여서 축하해요.",
+        options: ["소풍", "여행", "돌잔치", "결혼식"],
+        answer: 3
+      }
+    ];
+
+    let currentQuizQueue = [];
+    let currentIndex = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let incorrectQuestionsList = [];
+    let isAnswered = false;
+    let pieChartInstance = null;
+
+    // Number symbols ①, ②, ③, ④
+    const numberSymbols = ["①", "②", "③", "④"];
+
+    function initQuiz(questionsList, modeLabel = "전체 문제") {
+      currentQuizQueue = [...questionsList];
+      currentIndex = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      incorrectQuestionsList = [];
+      isAnswered = false;
+
+      document.getElementById('mode-badge').innerText = modeLabel;
+      document.getElementById('correct-count-live').innerText = '0';
+      document.getElementById('wrong-count-live').innerText = '0';
+
+      document.getElementById('result-container').classList.add('hidden');
+      document.getElementById('quiz-container').classList.remove('hidden');
+
+      renderCurrentQuestion();
+    }
+
+    function renderCurrentQuestion() {
+      if (currentIndex >= currentQuizQueue.length) {
+        showResults();
+        return;
+      }
+
+      isAnswered = false;
+      const q = currentQuizQueue[currentIndex];
+
+      // Update counters & progress bar
+      document.getElementById('progress-text').innerText = `문제 ${currentIndex + 1} / ${currentQuizQueue.length}`;
+      const progressPercent = ((currentIndex) / currentQuizQueue.length) * 100;
+      document.getElementById('progress-bar-fill').style.width = `${progressPercent}%`;
+
+      // Section information
+      document.getElementById('section-title').innerText = q.sectionTitle;
+      document.getElementById('section-desc').innerText = q.sectionDesc;
+
+      // Question Number & Content
+      document.getElementById('question-number-badge').innerText = q.num;
+      document.getElementById('question-text').innerHTML = q.promptHtml;
+
+      // Reset Feedback
+      const feedbackBox = document.getElementById('feedback-box');
+      feedbackBox.classList.add('hidden');
+
+      // Populate Options
+      const optionsContainer = document.getElementById('options-list');
+      optionsContainer.innerHTML = '';
+
+      q.options.forEach((optText, idx) => {
+        const optionNumber = idx + 1;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.id = `option-btn-${optionNumber}`;
+        btn.className = "w-full text-left p-4 rounded-xl border-2 border-slate-200 bg-white hover:border-indigo-400 hover:bg-slate-50 transition flex items-center justify-between text-slate-800 font-medium group focus:outline-none";
+        btn.onclick = () => handleSelectOption(optionNumber);
+
+        btn.innerHTML = `
+          <div class="flex items-center space-x-3.5">
+            <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-indigo-100 group-hover:text-indigo-700 text-slate-600 font-bold text-sm transition">
+              ${numberSymbols[idx]}
+            </span>
+            <span class="text-base text-slate-800">${optText}</span>
+          </div>
+          <span class="status-indicator text-lg"></span>
+        `;
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function handleSelectOption(selectedChoice) {
+      if (isAnswered) return;
+      isAnswered = true;
+
+      const q = currentQuizQueue[currentIndex];
+      const isCorrect = (selectedChoice === q.answer);
+
+      // Disable all option buttons and apply colors
+      for (let i = 1; i <= q.options.length; i++) {
+        const btn = document.getElementById(`option-btn-${i}`);
+        btn.disabled = true;
+        btn.classList.remove('hover:border-indigo-400', 'hover:bg-slate-50');
+
+        const indicator = btn.querySelector('.status-indicator');
+
+        if (i === q.answer) {
+          // Correct answer style (Green)
+          btn.className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50/80 transition flex items-center justify-between text-slate-900 font-semibold";
+          indicator.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i>';
+        } else if (i === selectedChoice && !isCorrect) {
+          // Selected wrong answer style (Red)
+          btn.className = "w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50/80 transition flex items-center justify-between text-slate-900 font-semibold";
+          indicator.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-500"></i>';
+        } else {
+          // Other unselected options dimmed
+          btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 bg-white opacity-40 transition flex items-center justify-between text-slate-600";
+        }
+      }
+
+      // Update counters
+      if (isCorrect) {
+        correctCount++;
+        document.getElementById('correct-count-live').innerText = correctCount;
+      } else {
+        wrongCount++;
+        document.getElementById('wrong-count-live').innerText = wrongCount;
+        incorrectQuestionsList.push(q);
+      }
+
+      // Show Feedback box
+      const feedbackBox = document.getElementById('feedback-box');
+      const feedbackAlert = document.getElementById('feedback-alert');
+      const feedbackIcon = document.getElementById('feedback-icon');
+      const feedbackTitle = document.getElementById('feedback-title');
+      const feedbackDesc = document.getElementById('feedback-desc');
+      const nextBtn = document.getElementById('next-btn');
+
+      if (isCorrect) {
+        feedbackAlert.className = "p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-center justify-between";
+        feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i>';
+        feedbackTitle.innerText = "정답입니다!";
+        feedbackDesc.innerText = `정답: ${numberSymbols[q.answer - 1]} ${q.options[q.answer - 1]}`;
+        nextBtn.className = "shrink-0 ml-3 px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm transition flex items-center space-x-1.5";
+      } else {
+        feedbackAlert.className = "p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 flex items-center justify-between";
+        feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-600"></i>';
+        feedbackTitle.innerText = "오답입니다.";
+        feedbackDesc.innerText = `정답은 ${numberSymbols[q.answer - 1]} ${q.options[q.answer - 1]} 입니다.`;
+        nextBtn.className = "shrink-0 ml-3 px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-rose-600 hover:bg-rose-700 shadow-sm transition flex items-center space-x-1.5";
+      }
+
+      feedbackBox.classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      if (currentIndex < currentQuizQueue.length) {
+        renderCurrentQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz-container').classList.add('hidden');
+      document.getElementById('result-container').classList.remove('hidden');
+
+      const total = currentQuizQueue.length;
+      const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+
+      document.getElementById('stat-total').innerText = total;
+      document.getElementById('stat-correct').innerText = correctCount;
+      document.getElementById('stat-wrong').innerText = wrongCount;
+      document.getElementById('chart-accuracy').innerText = `${accuracy}%`;
+
+      // Configure retry incorrect button state
+      const retryWrongBtn = document.getElementById('btn-retry-wrong');
+      if (wrongCount === 0) {
+        retryWrongBtn.disabled = true;
+        retryWrongBtn.title = "틀린 문제가 없습니다!";
+      } else {
+        retryWrongBtn.disabled = false;
+        retryWrongBtn.title = "";
+      }
+
+      // Draw / Re-render Chart.js Pie Chart
+      const ctx = document.getElementById('resultChart').getContext('2d');
+      if (pieChartInstance) {
+        pieChartInstance.destroy();
+      }
+
+      pieChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['정답', '오답'],
+          datasets: [{
+            data: [correctCount, wrongCount],
+            backgroundColor: ['#10b981', '#f43f5e'],
+            hoverBackgroundColor: ['#059669', '#e11d48'],
+            borderWidth: 2,
+            borderColor: '#ffffff',
+            cutout: '72%'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.parsed || 0;
+                  const pct = total > 0 ? Math.round((value / total) * 100) : 0;
+                  return ` ${label}: ${value}문제 (${pct}%)`;
+                }
+              }
+            }
+          },
+          animation: {
+            animateScale: true,
+            animateRotate: true,
+            duration: 800
+          }
+        }
+      });
+    }
+
+    function restartAll() {
+      initQuiz(ALL_QUESTIONS, "전체 문제");
+    }
+
+    function retryIncorrect() {
+      if (incorrectQuestionsList.length === 0) return;
+      initQuiz(incorrectQuestionsList, `오답 다시 풀기 (${incorrectQuestionsList.length}문제)`);
+    }
+
+    // Start immediately on window load
+    window.addEventListener('DOMContentLoaded', () => {
+      initQuiz(ALL_QUESTIONS, "전체 문제");
+    });
+  </script>
+</body>
+</html>
